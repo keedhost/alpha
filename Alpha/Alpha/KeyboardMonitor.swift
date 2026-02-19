@@ -22,6 +22,7 @@ final class KeyboardMonitor {
             promptForAccessibilityPermission()
             return
         }
+        DebugLogger.log("Accessibility trusted")
         if eventTap != nil { return }
 
         let mask = (1 << CGEventType.keyDown.rawValue)
@@ -103,17 +104,21 @@ final class KeyboardMonitor {
     private func evaluateAndReplaceIfNeeded() {
         guard !currentWord.isEmpty else { return }
 
+        DebugLogger.log("Evaluate word: \(currentWord)")
         let inputLanguage = currentWordLanguage ?? currentInputLanguage()
+        DebugLogger.log("Input language: \(inputLanguage ?? "unknown")")
         if inputLanguage == "en" {
             let mapped = KeyboardMapping.mapLatinToUkrainian(currentWord)
             guard mapped != currentWord else { return }
             if shouldReplace(original: currentWord, mapped: mapped, originalLanguage: .english, mappedLanguage: .ukrainian) {
+                DebugLogger.log("Replace EN->UK: \(currentWord) -> \(mapped)")
                 replaceCurrentWord(with: mapped)
             }
         } else if inputLanguage == "uk" {
             let mapped = KeyboardMapping.mapUkrainianToLatin(currentWord)
             guard mapped != currentWord else { return }
             if shouldReplace(original: currentWord, mapped: mapped, originalLanguage: .ukrainian, mappedLanguage: .english) {
+                DebugLogger.log("Replace UK->EN: \(currentWord) -> \(mapped)")
                 replaceCurrentWord(with: mapped)
             }
         } else {
@@ -121,15 +126,19 @@ final class KeyboardMonitor {
             let toEng = KeyboardMapping.mapUkrainianToLatin(currentWord)
             let ukScore = languageScore(toUkr, language: .ukrainian)
             let enScore = languageScore(toEng, language: .english)
+            DebugLogger.log("Unknown input language scores: uk=\(ukScore) en=\(enScore)")
             if ukScore >= 0.35 && ukScore > enScore + 0.15 {
+                DebugLogger.log("Replace -> UK: \(currentWord) -> \(toUkr)")
                 replaceCurrentWord(with: toUkr)
             } else if enScore >= 0.35 && enScore > ukScore + 0.15 {
+                DebugLogger.log("Replace -> EN: \(currentWord) -> \(toEng)")
                 replaceCurrentWord(with: toEng)
             }
         }
     }
 
     private func replaceCurrentWord(with replacement: String) {
+        DebugLogger.log("Replacing word with: \(replacement)")
         isSynthesizing = true
         defer { isSynthesizing = false }
 
@@ -142,6 +151,7 @@ final class KeyboardMonitor {
         if original.count < 3 { return false }
         let originalScore = languageScore(original, language: originalLanguage)
         let mappedScore = languageScore(mapped, language: mappedLanguage)
+        DebugLogger.log("Scores original=\(originalScore) mapped=\(mappedScore) for \(original)->\(mapped)")
         return mappedScore >= 0.35 && mappedScore > originalScore + 0.15
     }
 
