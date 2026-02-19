@@ -46,14 +46,15 @@ struct DebugLogger {
     }
 
     private static func logSigningInfo() {
-        var code: SecCode?
-        let selfStatus = SecCodeCopySelf(SecCSFlags(), &code)
-        guard selfStatus == errSecSuccess, let code else {
-            log("Code signing: unable to read (status=\(selfStatus))")
+        var staticCode: SecStaticCode?
+        let bundleURL = Bundle.main.bundleURL as CFURL
+        let createStatus = SecStaticCodeCreateWithPath(bundleURL, SecCSFlags(), &staticCode)
+        guard createStatus == errSecSuccess, let staticCode else {
+            log("Code signing: unable to create static code (status=\(createStatus))")
             return
         }
         var info: CFDictionary?
-        let infoStatus = SecCodeCopySigningInformation(code, SecCSFlags(rawValue: kSecCSSigningInformation), &info)
+        let infoStatus = SecCodeCopySigningInformation(staticCode, SecCSFlags(rawValue: kSecCSSigningInformation), &info)
         guard infoStatus == errSecSuccess, let info = info as? [String: Any] else {
             log("Code signing: no info (status=\(infoStatus))")
             return
