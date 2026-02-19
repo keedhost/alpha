@@ -162,7 +162,7 @@ final class KeyboardMonitor {
 
     private func postText(_ text: String) {
         for scalar in text.unicodeScalars {
-            var value = scalar.value
+            let value = scalar.value
             var chars: [UniChar] = [UniChar(value)]
             let down = CGEvent(keyboardEventSource: nil, virtualKey: 0, keyDown: true)
             let up = CGEvent(keyboardEventSource: nil, virtualKey: 0, keyDown: false)

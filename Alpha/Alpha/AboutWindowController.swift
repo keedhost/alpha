@@ -37,12 +37,7 @@ final class AboutWindowController: NSWindowController {
         licenseButton.bezelStyle = .inline
         siteButton.bezelStyle = .inline
 
-        licenseButton.target = self
-        licenseButton.action = #selector(openLicense)
-        siteButton.target = self
-        siteButton.action = #selector(openProjectSite)
-
-        applyLocalization()
+        // Targets and localized content are set after super.init.
 
         stack.addArrangedSubview(nameLabel)
         stack.addArrangedSubview(versionLabel)
@@ -62,6 +57,13 @@ final class AboutWindowController: NSWindowController {
         ])
 
         super.init(window: window)
+
+        licenseButton.target = self
+        licenseButton.action = #selector(openLicense)
+        siteButton.target = self
+        siteButton.action = #selector(openProjectSite)
+
+        applyLocalization()
     }
 
     required init?(coder: NSCoder) {

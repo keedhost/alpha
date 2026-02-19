@@ -30,16 +30,10 @@ final class SettingsWindowController: NSWindowController {
         container.spacing = 14
         container.translatesAutoresizingMaskIntoConstraints = false
 
-        loginItemButton.target = self
-        loginItemButton.action = #selector(toggleLoginItem)
-
         let languageRow = NSStackView(views: [languageLabel, languageControl])
         languageRow.orientation = .horizontal
         languageRow.alignment = .centerY
         languageRow.spacing = 12
-
-        languageControl.target = self
-        languageControl.action = #selector(changeLanguage)
 
         container.addArrangedSubview(languageRow)
         container.addArrangedSubview(loginItemButton)
@@ -54,6 +48,12 @@ final class SettingsWindowController: NSWindowController {
         ])
 
         super.init(window: window)
+
+        loginItemButton.target = self
+        loginItemButton.action = #selector(toggleLoginItem)
+        languageControl.target = self
+        languageControl.action = #selector(changeLanguage)
+
         updateLoginItemState()
         updateLanguageSegmentTitles()
         syncLanguageSelection()
