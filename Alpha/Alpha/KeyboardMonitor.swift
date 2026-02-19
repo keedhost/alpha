@@ -35,6 +35,7 @@ final class KeyboardMonitor {
                 DebugLogger.log("Input Monitoring not trusted, requesting")
                 requestInputMonitoringAccess()
             }
+            DebugLogger.log("If permissions stay false after enabling, try removing Alpha from both lists and re-adding. You may also run: tccutil reset Accessibility com.keedhost.alpha; tccutil reset ListenEvent com.keedhost.alpha")
             startTrustPolling()
             return
         }

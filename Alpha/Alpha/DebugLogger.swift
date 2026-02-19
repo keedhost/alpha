@@ -1,4 +1,5 @@
 import Foundation
+import Security
 
 struct DebugLogger {
     private(set) static var isEnabled = false
@@ -25,6 +26,7 @@ struct DebugLogger {
         log("Debug logging enabled")
         log("Arguments: \(CommandLine.arguments.joined(separator: " "))")
         NSLog("[Alpha] Debug logging enabled")
+        logSigningInfo()
     }
 
     static func log(_ message: String) {
@@ -41,5 +43,24 @@ struct DebugLogger {
     private static func logFileURL() -> URL {
         let home = FileManager.default.homeDirectoryForCurrentUser
         return home.appendingPathComponent("alpha-debug.log")
+    }
+
+    private static func logSigningInfo() {
+        var code: SecCode?
+        let selfStatus = SecCodeCopySelf(SecCSFlags(), &code)
+        guard selfStatus == errSecSuccess, let code else {
+            log("Code signing: unable to read (status=\(selfStatus))")
+            return
+        }
+        var info: CFDictionary?
+        let infoStatus = SecCodeCopySigningInformation(code, SecCSFlags(rawValue: kSecCSSigningInformation), &info)
+        guard infoStatus == errSecSuccess, let info = info as? [String: Any] else {
+            log("Code signing: no info (status=\(infoStatus))")
+            return
+        }
+        let identifier = info[kSecCodeInfoIdentifier as String] as? String ?? "unknown"
+        let teamId = info[kSecCodeInfoTeamIdentifier as String] as? String ?? "none"
+        let flags = info[kSecCodeInfoFlags as String] as? UInt64 ?? 0
+        log("Code signing: identifier=\(identifier) team=\(teamId) flags=\(flags)")
     }
 }
