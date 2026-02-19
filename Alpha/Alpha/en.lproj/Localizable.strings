@@ -19,3 +19,6 @@
 "open_settings_button" = "Open Settings";
 "later_button" = "Later";
 "year_prefix" = "©";
+"already_running_title" = "Alpha is already running";
+"already_running_body" = "Another copy of the app is already running. Please use the existing instance from the menu bar.";
+"ok_button" = "OK";

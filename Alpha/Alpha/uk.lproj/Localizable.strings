@@ -19,3 +19,6 @@
 "open_settings_button" = "Відкрити Налаштування";
 "later_button" = "Пізніше";
 "year_prefix" = "©";
+"already_running_title" = "Alpha вже запущена";
+"already_running_body" = "Інша копія додатка вже працює. Будь ласка, використовуйте існуючий екземпляр у меню-барі.";
+"ok_button" = "Гаразд";
