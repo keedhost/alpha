@@ -7,6 +7,8 @@ final class KeyboardMonitor {
     private var runLoopSource: CFRunLoopSource?
     private var isEnabled = false
     private var isSynthesizing = false
+    private var hasPromptedAccessibility = false
+    private var trustCheckTimer: DispatchSourceTimer?
 
     private var currentWord: String = ""
     private var currentWordLanguage: String?
@@ -17,9 +19,13 @@ final class KeyboardMonitor {
 
     func startMonitoringIfPossible() {
         DebugLogger.log("startMonitoringIfPossible")
-        guard isAccessibilityTrusted() else {
+        if !isAccessibilityTrusted() {
             DebugLogger.log("Accessibility not trusted, prompting")
-            promptForAccessibilityPermission()
+            if !hasPromptedAccessibility {
+                hasPromptedAccessibility = true
+                promptForAccessibilityPermission()
+            }
+            startTrustPolling()
             return
         }
         DebugLogger.log("Accessibility trusted")
@@ -55,6 +61,7 @@ final class KeyboardMonitor {
 
     func stopMonitoring() {
         DebugLogger.log("stopMonitoring")
+        stopTrustPolling()
         if let eventTap {
             CGEvent.tapEnable(tap: eventTap, enable: false)
         }
@@ -208,11 +215,13 @@ final class KeyboardMonitor {
     }
 
     private func isAccessibilityTrusted() -> Bool {
+        if AXIsProcessTrusted() { return true }
         let options = [kAXTrustedCheckOptionPrompt.takeRetainedValue() as String: false] as CFDictionary
         return AXIsProcessTrustedWithOptions(options)
     }
 
     private func promptForAccessibilityPermission() {
+        DebugLogger.log("Bundle path: \(Bundle.main.bundlePath)")
         let options = [kAXTrustedCheckOptionPrompt.takeRetainedValue() as String: true] as CFDictionary
         _ = AXIsProcessTrustedWithOptions(options)
 
@@ -226,6 +235,27 @@ final class KeyboardMonitor {
                 NSWorkspace.shared.open(url)
             }
         }
+    }
+
+    private func startTrustPolling() {
+        if trustCheckTimer != nil { return }
+        let timer = DispatchSource.makeTimerSource(queue: .main)
+        timer.schedule(deadline: .now() + 1, repeating: 2)
+        timer.setEventHandler { [weak self] in
+            guard let self else { return }
+            if self.isAccessibilityTrusted() {
+                DebugLogger.log("Accessibility granted, enabling event tap")
+                self.stopTrustPolling()
+                self.startMonitoringIfPossible()
+            }
+        }
+        trustCheckTimer = timer
+        timer.resume()
+    }
+
+    private func stopTrustPolling() {
+        trustCheckTimer?.cancel()
+        trustCheckTimer = nil
     }
 }
 
