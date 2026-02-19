@@ -21,7 +21,8 @@
 "privacy_notice" = "The app does not store typed text and monitors keyboard input only for the user’s convenience.";
 "accessibility_title" = "Accessibility access required";
 "accessibility_body" = "To correct layout on the fly, the app needs Accessibility and Input Monitoring permissions. Open System Settings → Privacy & Security → Accessibility and Input Monitoring, then enable Alpha.";
-"open_settings_button" = "Open Settings";
+"open_accessibility_button" = "Open Accessibility";
+"open_input_monitoring_button" = "Open Input Monitoring";
 "later_button" = "Later";
 "year_prefix" = "©";
 "already_running_title" = "Alpha is already running";

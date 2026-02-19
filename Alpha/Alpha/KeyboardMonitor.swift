@@ -247,10 +247,16 @@ final class KeyboardMonitor {
         let alert = NSAlert()
         alert.messageText = LocalizationManager.text("accessibility_title")
         alert.informativeText = LocalizationManager.text("accessibility_body")
-        alert.addButton(withTitle: LocalizationManager.text("open_settings_button"))
+        alert.addButton(withTitle: LocalizationManager.text("open_accessibility_button"))
+        alert.addButton(withTitle: LocalizationManager.text("open_input_monitoring_button"))
         alert.addButton(withTitle: LocalizationManager.text("later_button"))
-        if alert.runModal() == .alertFirstButtonReturn {
+        let response = alert.runModal()
+        if response == .alertFirstButtonReturn {
             if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility") {
+                NSWorkspace.shared.open(url)
+            }
+        } else if response == .alertSecondButtonReturn {
+            if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_ListenEvent") {
                 NSWorkspace.shared.open(url)
             }
         }
@@ -262,7 +268,10 @@ final class KeyboardMonitor {
         timer.schedule(deadline: .now() + 1, repeating: 2)
         timer.setEventHandler { [weak self] in
             guard let self else { return }
-            if self.isAccessibilityTrusted() && self.isInputMonitoringTrusted() {
+            let acc = self.isAccessibilityTrusted()
+            let im = self.isInputMonitoringTrusted()
+            DebugLogger.log("Permission poll: accessibility=\(acc) inputMonitoring=\(im)")
+            if acc && im {
                 DebugLogger.log("Permissions granted, enabling event tap")
                 self.stopTrustPolling()
                 self.startMonitoringIfPossible()
