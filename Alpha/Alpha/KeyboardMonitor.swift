@@ -107,14 +107,24 @@ final class KeyboardMonitor {
         if inputLanguage == "en" {
             let mapped = KeyboardMapping.mapLatinToUkrainian(currentWord)
             guard mapped != currentWord else { return }
-            if isLikelyLanguage(mapped, language: .ukrainian) {
+            if shouldReplace(original: currentWord, mapped: mapped, originalLanguage: .english, mappedLanguage: .ukrainian) {
                 replaceCurrentWord(with: mapped)
             }
         } else if inputLanguage == "uk" {
             let mapped = KeyboardMapping.mapUkrainianToLatin(currentWord)
             guard mapped != currentWord else { return }
-            if isLikelyLanguage(mapped, language: .english) {
+            if shouldReplace(original: currentWord, mapped: mapped, originalLanguage: .ukrainian, mappedLanguage: .english) {
                 replaceCurrentWord(with: mapped)
+            }
+        } else {
+            let toUkr = KeyboardMapping.mapLatinToUkrainian(currentWord)
+            let toEng = KeyboardMapping.mapUkrainianToLatin(currentWord)
+            let ukScore = languageScore(toUkr, language: .ukrainian)
+            let enScore = languageScore(toEng, language: .english)
+            if ukScore >= 0.35 && ukScore > enScore + 0.15 {
+                replaceCurrentWord(with: toUkr)
+            } else if enScore >= 0.35 && enScore > ukScore + 0.15 {
+                replaceCurrentWord(with: toEng)
             }
         }
     }
@@ -128,12 +138,17 @@ final class KeyboardMonitor {
         postText(replacement)
     }
 
-    private func isLikelyLanguage(_ text: String, language: NLLanguage) -> Bool {
+    private func shouldReplace(original: String, mapped: String, originalLanguage: NLLanguage, mappedLanguage: NLLanguage) -> Bool {
+        if original.count < 3 { return false }
+        let originalScore = languageScore(original, language: originalLanguage)
+        let mappedScore = languageScore(mapped, language: mappedLanguage)
+        return mappedScore >= 0.35 && mappedScore > originalScore + 0.15
+    }
+
+    private func languageScore(_ text: String, language: NLLanguage) -> Double {
         let recognizer = NLLanguageRecognizer()
         recognizer.processString(text)
-        let hypotheses = recognizer.languageHypotheses(withMaximum: 2)
-        let confidence = hypotheses[language] ?? 0
-        return confidence >= 0.6
+        return recognizer.languageHypotheses(withMaximum: 2)[language] ?? 0
     }
 
     private func currentInputLanguage() -> String? {
