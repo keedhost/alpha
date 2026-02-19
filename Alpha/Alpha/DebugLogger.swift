@@ -1,7 +1,7 @@
 import Foundation
 
-enum DebugLogger {
-    private static(set) var isEnabled = false
+struct DebugLogger {
+    private(set) static var isEnabled = false
 
     static func configureIfNeeded() {
         isEnabled = CommandLine.arguments.contains("--debug")
