@@ -29,13 +29,13 @@ final class KeyboardMonitor {
         }
 
         let userInfo = Unmanaged.passUnretained(self).toOpaque()
-        eventTap = CGEventTapCreate(
-            .cgSessionEventTap,
-            .headInsertEventTap,
-            .defaultTap,
-            CGEventMask(mask),
-            callback,
-            userInfo
+        eventTap = CGEvent.tapCreate(
+            tap: .cgSessionEventTap,
+            place: .headInsertEventTap,
+            options: .defaultTap,
+            eventsOfInterest: CGEventMask(mask),
+            callback: callback,
+            userInfo: userInfo
         )
 
         guard let eventTap else { return }
@@ -43,12 +43,12 @@ final class KeyboardMonitor {
         if let source = runLoopSource {
             CFRunLoopAddSource(CFRunLoopGetCurrent(), source, .commonModes)
         }
-        CGEventTapEnable(eventTap, true)
+        CGEvent.tapEnable(tap: eventTap, enable: true)
     }
 
     func stopMonitoring() {
         if let eventTap {
-            CGEventTapEnable(eventTap, false)
+            CGEvent.tapEnable(tap: eventTap, enable: false)
         }
         if let source = runLoopSource {
             CFRunLoopRemoveSource(CFRunLoopGetCurrent(), source, .commonModes)
@@ -100,13 +100,13 @@ final class KeyboardMonitor {
         if inputLanguage == "en" {
             let mapped = KeyboardMapping.mapLatinToUkrainian(currentWord)
             guard mapped != currentWord else { return }
-            if isLikelyLanguage(mapped, language: .uk) {
+            if isLikelyLanguage(mapped, language: .ukrainian) {
                 replaceCurrentWord(with: mapped)
             }
         } else if inputLanguage == "uk" {
             let mapped = KeyboardMapping.mapUkrainianToLatin(currentWord)
             guard mapped != currentWord else { return }
-            if isLikelyLanguage(mapped, language: .en) {
+            if isLikelyLanguage(mapped, language: .english) {
                 replaceCurrentWord(with: mapped)
             }
         }
