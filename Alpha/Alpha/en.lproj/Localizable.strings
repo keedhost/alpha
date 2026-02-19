@@ -12,6 +12,7 @@
 "display_mode_tray" = "Menu bar";
 "display_mode_dock" = "Dock";
 "display_mode_both" = "Dock + Menu bar";
+"display_mode_status" = "App icon: %@";
 "app_name" = "Alpha";
 "version_label" = "Version";
 "author_label" = "Author: Andrii Kondratiev";

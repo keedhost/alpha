@@ -12,6 +12,7 @@
 "display_mode_tray" = "Меню-бар";
 "display_mode_dock" = "Dock";
 "display_mode_both" = "Dock + меню-бар";
+"display_mode_status" = "Іконка додатка: %@";
 "app_name" = "Alpha";
 "version_label" = "Версія";
 "author_label" = "Автор: Andrii Kondratiev";

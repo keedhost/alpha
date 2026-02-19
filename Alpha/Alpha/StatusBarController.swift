@@ -5,6 +5,7 @@ final class StatusBarController: NSObject {
     private let menu: NSMenu
     private let autocorrectItem: NSMenuItem
     private let languageItem: NSMenuItem
+    private let displayModeItem: NSMenuItem
     private let settingsItem: NSMenuItem
     private let aboutItem: NSMenuItem
     private let quitItem: NSMenuItem
@@ -23,6 +24,7 @@ final class StatusBarController: NSObject {
         menu = NSMenu()
         autocorrectItem = NSMenuItem()
         languageItem = NSMenuItem(title: "", action: nil, keyEquivalent: "")
+        displayModeItem = NSMenuItem(title: "", action: nil, keyEquivalent: "")
         settingsItem = NSMenuItem(title: LocalizationManager.text("settings"), action: #selector(openSettings), keyEquivalent: ",")
         aboutItem = NSMenuItem(title: LocalizationManager.text("about"), action: #selector(openAbout), keyEquivalent: "")
         quitItem = NSMenuItem(title: LocalizationManager.text("quit"), action: #selector(quit), keyEquivalent: "q")
@@ -42,6 +44,7 @@ final class StatusBarController: NSObject {
         menu.addItem(autocorrectItem)
         menu.addItem(.separator())
         menu.addItem(languageItem)
+        menu.addItem(displayModeItem)
         menu.addItem(.separator())
         menu.addItem(settingsItem)
         menu.addItem(aboutItem)
@@ -50,12 +53,15 @@ final class StatusBarController: NSObject {
 
         statusItem.menu = menu
         languageItem.isEnabled = false
+        displayModeItem.isEnabled = false
 
         updateAutocorrectTitle()
         updateLanguageTitle()
+        updateDisplayModeTitle()
         updateAutocorrectState()
 
         NotificationCenter.default.addObserver(self, selector: #selector(languageDidChange), name: LocalizationManager.languageDidChange, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(displayModeDidChange), name: AppNotifications.displayModeDidChange, object: nil)
     }
 
     private func updateAutocorrectTitle() {
@@ -69,6 +75,21 @@ final class StatusBarController: NSObject {
             ? LocalizationManager.text("language_name_uk")
             : LocalizationManager.text("language_name_en")
         languageItem.title = String(format: LocalizationManager.text("language_status"), languageName)
+    }
+
+    private func updateDisplayModeTitle() {
+        let raw = UserDefaults.standard.string(forKey: Preferences.displayModeKey)
+        let mode = AppDisplayMode(rawValue: raw ?? "") ?? AppDisplayMode.defaultValue()
+        let modeName: String
+        switch mode {
+        case .trayOnly:
+            modeName = LocalizationManager.text("display_mode_tray")
+        case .dockOnly:
+            modeName = LocalizationManager.text("display_mode_dock")
+        case .both:
+            modeName = LocalizationManager.text("display_mode_both")
+        }
+        displayModeItem.title = String(format: LocalizationManager.text("display_mode_status"), modeName)
     }
 
     private func updateAutocorrectState() {
@@ -114,8 +135,13 @@ final class StatusBarController: NSObject {
         quitItem.title = LocalizationManager.text("quit")
         updateAutocorrectTitle()
         updateLanguageTitle()
+        updateDisplayModeTitle()
         settingsWindowController?.applyLocalization()
         aboutWindowController?.applyLocalization()
+    }
+
+    @objc private func displayModeDidChange() {
+        updateDisplayModeTitle()
     }
 
     @objc private func quit() {
