@@ -141,7 +141,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-/* End PBXVariantGroup section */
+/* End PBXResourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
 		A1B2C3D4E5F60001A0000021 /* Localizable.strings */ = {
@@ -153,7 +153,7 @@
 			name = Localizable.strings;
 			sourceTree = "<group>";
 		};
-/* End PBXResourcesBuildPhase section */
+/* End PBXVariantGroup section */
 
 /* Begin PBXSourcesBuildPhase section */
 		A1B2C3D4E5F60001A0000101 /* Sources */ = {
