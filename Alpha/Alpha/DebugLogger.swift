@@ -24,6 +24,7 @@ struct DebugLogger {
 
         log("Debug logging enabled")
         log("Arguments: \(CommandLine.arguments.joined(separator: " "))")
+        NSLog("[Alpha] Debug logging enabled")
     }
 
     static func log(_ message: String) {
