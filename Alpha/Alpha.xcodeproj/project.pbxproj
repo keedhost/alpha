@@ -85,7 +85,7 @@
 /* Begin PBXNativeTarget section */
 		A1B2C3D4E5F60001A0000300 /* Alpha */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = A1B2C3D4E5F60001A0000402 /* Build configuration list for PBXNativeTarget "Alpha" */;
+			buildConfigurationList = A1B2C3D4E5F60001A0000405 /* Build configuration list for PBXNativeTarget "Alpha" */;
 			buildPhases = (
 				A1B2C3D4E5F60001A0000101 /* Sources */,
 				A1B2C3D4E5F60001A0000102 /* Resources */,
@@ -326,7 +326,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		A1B2C3D4E5F60001A0000402 /* Build configuration list for PBXNativeTarget "Alpha" */ = {
+		A1B2C3D4E5F60001A0000405 /* Build configuration list for PBXNativeTarget "Alpha" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				A1B2C3D4E5F60001A0000403 /* Debug */,
