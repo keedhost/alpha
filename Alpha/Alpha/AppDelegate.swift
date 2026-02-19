@@ -5,16 +5,20 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var statusBarController: StatusBarController?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
+        DebugLogger.configureIfNeeded()
+        DebugLogger.log("applicationDidFinishLaunching")
         LocalizationManager.configureIfNeeded()
         configureDisplayModeIfNeeded()
 
         if isAnotherInstanceRunning() {
+            DebugLogger.log("Another instance detected, showing alert and terminating")
             showAlreadyRunningAlert()
             NSApp.terminate(nil)
             return
         }
 
         statusBarController = StatusBarController()
+        DebugLogger.log("StatusBarController initialized")
         applyDisplayMode()
         NotificationCenter.default.addObserver(self, selector: #selector(displayModeDidChange), name: AppNotifications.displayModeDidChange, object: nil)
     }

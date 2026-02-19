@@ -16,7 +16,9 @@ final class KeyboardMonitor {
     }
 
     func startMonitoringIfPossible() {
+        DebugLogger.log("startMonitoringIfPossible")
         guard isAccessibilityTrusted() else {
+            DebugLogger.log("Accessibility not trusted, prompting")
             promptForAccessibilityPermission()
             return
         }
@@ -38,15 +40,20 @@ final class KeyboardMonitor {
             userInfo: userInfo
         )
 
-        guard let eventTap else { return }
+        guard let eventTap else {
+            DebugLogger.log("Failed to create event tap")
+            return
+        }
         runLoopSource = CFMachPortCreateRunLoopSource(kCFAllocatorDefault, eventTap, 0)
         if let source = runLoopSource {
             CFRunLoopAddSource(CFRunLoopGetCurrent(), source, .commonModes)
         }
         CGEvent.tapEnable(tap: eventTap, enable: true)
+        DebugLogger.log("Event tap enabled")
     }
 
     func stopMonitoring() {
+        DebugLogger.log("stopMonitoring")
         if let eventTap {
             CGEvent.tapEnable(tap: eventTap, enable: false)
         }

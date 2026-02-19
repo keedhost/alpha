@@ -15,6 +15,7 @@
 		A1B2C3D4E5F60001A0000006 /* AboutWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60001A0000016 /* AboutWindowController.swift */; };
 		A1B2C3D4E5F60001A0000008 /* Preferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60001A0000018 /* Preferences.swift */; };
 		A1B2C3D4E5F60001A0000009 /* Localization.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60001A0000019 /* Localization.swift */; };
+		A1B2C3D4E5F60001A000000B /* DebugLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60001A0000024 /* DebugLogger.swift */; };
 		A1B2C3D4E5F60001A0000007 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60001A0000020 /* Assets.xcassets */; };
 		A1B2C3D4E5F60001A000000A /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60001A0000021 /* Localizable.strings */; };
 /* End PBXBuildFile section */
@@ -29,6 +30,7 @@
 		A1B2C3D4E5F60001A0000016 /* AboutWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutWindowController.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60001A0000018 /* Preferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Preferences.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60001A0000019 /* Localization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Localization.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F60001A0000024 /* DebugLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugLogger.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F60001A0000017 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A1B2C3D4E5F60001A0000020 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A1B2C3D4E5F60001A0000022 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -65,6 +67,7 @@
 				A1B2C3D4E5F60001A0000016 /* AboutWindowController.swift */,
 				A1B2C3D4E5F60001A0000018 /* Preferences.swift */,
 				A1B2C3D4E5F60001A0000019 /* Localization.swift */,
+				A1B2C3D4E5F60001A0000024 /* DebugLogger.swift */,
 				A1B2C3D4E5F60001A0000021 /* Localizable.strings */,
 				A1B2C3D4E5F60001A0000017 /* Info.plist */,
 				A1B2C3D4E5F60001A0000020 /* Assets.xcassets */,
@@ -168,6 +171,7 @@
 				A1B2C3D4E5F60001A0000006 /* AboutWindowController.swift in Sources */,
 				A1B2C3D4E5F60001A0000008 /* Preferences.swift in Sources */,
 				A1B2C3D4E5F60001A0000009 /* Localization.swift in Sources */,
+				A1B2C3D4E5F60001A000000B /* DebugLogger.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
