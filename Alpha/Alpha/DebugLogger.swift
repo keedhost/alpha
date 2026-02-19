@@ -3,8 +3,11 @@ import Foundation
 struct DebugLogger {
     private(set) static var isEnabled = false
     private static var logFileHandle: FileHandle?
+    private static var configured = false
 
     static func configureIfNeeded() {
+        guard !configured else { return }
+        configured = true
         isEnabled = CommandLine.arguments.contains("--debug")
         guard isEnabled else { return }
 
@@ -29,6 +32,7 @@ struct DebugLogger {
         let line = "[Alpha] \(ts) \(message)\n"
         if let data = line.data(using: .utf8) {
             logFileHandle?.write(data)
+            try? logFileHandle?.synchronize()
         }
         fputs(line, stderr)
     }

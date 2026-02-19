@@ -52,6 +52,7 @@ final class StatusBarController: NSObject {
         menu.addItem(quitItem)
 
         statusItem.menu = menu
+        statusItem.isVisible = true
         languageItem.isEnabled = false
         displayModeItem.isEnabled = false
 
@@ -108,6 +109,7 @@ final class StatusBarController: NSObject {
     }
 
     @objc private func openSettings() {
+        DebugLogger.log("Open settings window")
         if settingsWindowController == nil {
             settingsWindowController = SettingsWindowController()
         }

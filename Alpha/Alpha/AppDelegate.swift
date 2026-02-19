@@ -4,11 +4,16 @@ import AppKit
 final class AppDelegate: NSObject, NSApplicationDelegate {
     private var statusBarController: StatusBarController?
 
-    func applicationDidFinishLaunching(_ notification: Notification) {
+    override init() {
+        super.init()
         DebugLogger.configureIfNeeded()
+        DebugLogger.log("AppDelegate init")
+    }
+
+    func applicationDidFinishLaunching(_ notification: Notification) {
         DebugLogger.log("applicationDidFinishLaunching")
         LocalizationManager.configureIfNeeded()
-        configureDisplayModeIfNeeded()
+        configureDefaultsIfNeeded()
 
         if isAnotherInstanceRunning() {
             DebugLogger.log("Another instance detected, showing alert and terminating")
@@ -28,7 +33,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
+        DebugLogger.log("Dock icon clicked")
         statusBarController?.openSettingsFromDock()
+        NSApp.activate(ignoringOtherApps: true)
         return true
     }
 
@@ -47,10 +54,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         alert.runModal()
     }
 
-    private func configureDisplayModeIfNeeded() {
+    private func configureDefaultsIfNeeded() {
         let defaults = UserDefaults.standard
         if defaults.string(forKey: Preferences.displayModeKey) == nil {
             defaults.set(AppDisplayMode.defaultValue().rawValue, forKey: Preferences.displayModeKey)
+        }
+        if defaults.object(forKey: Preferences.autocorrectEnabledKey) == nil {
+            defaults.set(true, forKey: Preferences.autocorrectEnabledKey)
         }
     }
 
