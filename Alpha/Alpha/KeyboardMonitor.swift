@@ -19,16 +19,26 @@ final class KeyboardMonitor {
 
     func startMonitoringIfPossible() {
         DebugLogger.log("startMonitoringIfPossible")
-        if !isAccessibilityTrusted() {
-            DebugLogger.log("Accessibility not trusted, prompting")
-            if !hasPromptedAccessibility {
-                hasPromptedAccessibility = true
-                promptForAccessibilityPermission()
+        let accessibilityTrusted = isAccessibilityTrusted()
+        let inputMonitoringTrusted = isInputMonitoringTrusted()
+        DebugLogger.log("Accessibility trusted=\(accessibilityTrusted) InputMonitoring trusted=\(inputMonitoringTrusted)")
+
+        if !accessibilityTrusted || !inputMonitoringTrusted {
+            if !accessibilityTrusted {
+                DebugLogger.log("Accessibility not trusted, prompting")
+                if !hasPromptedAccessibility {
+                    hasPromptedAccessibility = true
+                    promptForAccessibilityPermission()
+                }
+            }
+            if !inputMonitoringTrusted {
+                DebugLogger.log("Input Monitoring not trusted, requesting")
+                requestInputMonitoringAccess()
             }
             startTrustPolling()
             return
         }
-        DebugLogger.log("Accessibility trusted")
+        DebugLogger.log("All permissions granted")
         if eventTap != nil { return }
 
         let mask = (1 << CGEventType.keyDown.rawValue)
@@ -220,6 +230,15 @@ final class KeyboardMonitor {
         return AXIsProcessTrustedWithOptions(options)
     }
 
+    private func isInputMonitoringTrusted() -> Bool {
+        return CGPreflightListenEventAccess()
+    }
+
+    private func requestInputMonitoringAccess() {
+        let granted = CGRequestListenEventAccess()
+        DebugLogger.log("Requested Input Monitoring access, granted=\(granted)")
+    }
+
     private func promptForAccessibilityPermission() {
         DebugLogger.log("Bundle path: \(Bundle.main.bundlePath)")
         let options = [kAXTrustedCheckOptionPrompt.takeRetainedValue() as String: true] as CFDictionary
@@ -243,8 +262,8 @@ final class KeyboardMonitor {
         timer.schedule(deadline: .now() + 1, repeating: 2)
         timer.setEventHandler { [weak self] in
             guard let self else { return }
-            if self.isAccessibilityTrusted() {
-                DebugLogger.log("Accessibility granted, enabling event tap")
+            if self.isAccessibilityTrusted() && self.isInputMonitoringTrusted() {
+                DebugLogger.log("Permissions granted, enabling event tap")
                 self.stopTrustPolling()
                 self.startMonitoringIfPossible()
             }

@@ -20,7 +20,7 @@
 "project_site_label" = "Project website";
 "privacy_notice" = "The app does not store typed text and monitors keyboard input only for the user’s convenience.";
 "accessibility_title" = "Accessibility access required";
-"accessibility_body" = "To correct layout on the fly, the app needs keyboard control. Open System Settings → Privacy & Security → Accessibility and enable Alpha.";
+"accessibility_body" = "To correct layout on the fly, the app needs Accessibility and Input Monitoring permissions. Open System Settings → Privacy & Security → Accessibility and Input Monitoring, then enable Alpha.";
 "open_settings_button" = "Open Settings";
 "later_button" = "Later";
 "year_prefix" = "©";
