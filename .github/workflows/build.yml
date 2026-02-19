@@ -7,15 +7,18 @@ on:
 jobs:
   build:
     runs-on: macos-latest
+    strategy:
+      matrix:
+        arch: [x86_64, arm64]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Build
-        run: ./build.sh
+      - name: Build DMG
+        run: ./package_dmg.sh ${{ matrix.arch }}
 
-      - name: Upload Alpha.app
+      - name: Upload DMG
         uses: actions/upload-artifact@v4
         with:
-          name: Alpha.app
-          path: .build/DerivedData/Build/Products/Release/Alpha.app
+          name: Alpha-${{ matrix.arch }}-dmg
+          path: dist/Alpha-${{ matrix.arch }}.dmg
