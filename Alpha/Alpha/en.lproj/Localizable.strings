@@ -8,6 +8,10 @@
 "language_status" = "Interface language: %@";
 "language_name_uk" = "Ukrainian";
 "language_name_en" = "English";
+"display_mode_label" = "App icon";
+"display_mode_tray" = "Menu bar";
+"display_mode_dock" = "Dock";
+"display_mode_both" = "Dock + Menu bar";
 "app_name" = "Alpha";
 "version_label" = "Version";
 "author_label" = "Author: Andrii Kondratiev";

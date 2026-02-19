@@ -5,8 +5,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var statusBarController: StatusBarController?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
-        NSApp.setActivationPolicy(.accessory)
         LocalizationManager.configureIfNeeded()
+        configureDisplayModeIfNeeded()
 
         if isAnotherInstanceRunning() {
             showAlreadyRunningAlert()
@@ -15,10 +15,17 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         }
 
         statusBarController = StatusBarController()
+        applyDisplayMode()
+        NotificationCenter.default.addObserver(self, selector: #selector(displayModeDidChange), name: AppNotifications.displayModeDidChange, object: nil)
     }
 
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
         return false
+    }
+
+    func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
+        statusBarController?.openSettingsFromDock()
+        return true
     }
 
     private func isAnotherInstanceRunning() -> Bool {
@@ -34,5 +41,36 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         alert.informativeText = LocalizationManager.text("already_running_body")
         alert.addButton(withTitle: LocalizationManager.text("ok_button"))
         alert.runModal()
+    }
+
+    private func configureDisplayModeIfNeeded() {
+        let defaults = UserDefaults.standard
+        if defaults.string(forKey: Preferences.displayModeKey) == nil {
+            defaults.set(AppDisplayMode.defaultValue().rawValue, forKey: Preferences.displayModeKey)
+        }
+    }
+
+    @objc private func displayModeDidChange() {
+        applyDisplayMode()
+    }
+
+    private func applyDisplayMode() {
+        let mode = currentDisplayMode()
+        switch mode {
+        case .trayOnly:
+            NSApp.setActivationPolicy(.accessory)
+            statusBarController?.setStatusItemVisible(true)
+        case .dockOnly:
+            NSApp.setActivationPolicy(.regular)
+            statusBarController?.setStatusItemVisible(false)
+        case .both:
+            NSApp.setActivationPolicy(.regular)
+            statusBarController?.setStatusItemVisible(true)
+        }
+    }
+
+    private func currentDisplayMode() -> AppDisplayMode {
+        let raw = UserDefaults.standard.string(forKey: Preferences.displayModeKey)
+        return AppDisplayMode(rawValue: raw ?? "") ?? AppDisplayMode.defaultValue()
     }
 }

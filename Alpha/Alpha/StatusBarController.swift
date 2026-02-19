@@ -95,6 +95,10 @@ final class StatusBarController: NSObject {
         NSApp.activate(ignoringOtherApps: true)
     }
 
+    func openSettingsFromDock() {
+        openSettings()
+    }
+
     @objc private func openAbout() {
         if aboutWindowController == nil {
             aboutWindowController = AboutWindowController()
@@ -117,5 +121,9 @@ final class StatusBarController: NSObject {
     @objc private func quit() {
         keyboardMonitor.stopMonitoring()
         NSApp.terminate(nil)
+    }
+
+    func setStatusItemVisible(_ isVisible: Bool) {
+        statusItem.isVisible = isVisible
     }
 }
